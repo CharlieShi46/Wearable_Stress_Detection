@@ -1,7 +1,7 @@
 # Stress & Activity Prediction from Multimodal Wearable Signals
 
-This repository contains an end-to-end, reproducible pipeline for **stress detection** and **activity recognition** using **multimodal wearable sensor data**.  
-The project combines:
+This repository contains a complete, end-to-end, reproducible pipeline for  
+**stress detection using multimodal wearable signals**, based on the WESAD dataset.
 
 - **Digital Health** – modeling physiological and behavioral states from wearable devices  
 - **Informatics / Applied ML** – building a fully reproducible ML pipeline  
@@ -10,7 +10,6 @@ The project combines:
 
 The code is organized so that **the same pipeline** can be applied to:
 - **WESAD** – stress vs non-stress classification  
-- **PAMAP2** – physical activity recognition  
 
 ---
 
@@ -64,22 +63,6 @@ You should place the WESAD data under:
 
 data/raw/wesad/
 
-### 2.2 PAMAP2 – Physical Activity Monitoring
-	•	Wearable sensor data recorded from multiple body locations
-	•	Signals include:
-	•	Accelerometer
-	•	Gyroscope
-	•	Magnetometer
-	•	Heart rate
-	•	Labeled physical activities such as:
-	•	Lying, sitting, standing
-	•	Walking, running, cycling
-	•	Household activities (vacuum cleaning, ironing, etc.)
-
-In this project, we use PAMAP2 for multi-class activity recognition.
-
-You should place the PAMAP2 data under:
-
 ---
 ## 3. Repository Structure
 
@@ -88,18 +71,8 @@ wearable-ml-behavior/
 │   ├── wesad_stress.yaml          # Config for stress detection experiments (WESAD)
 │   └── pamap2_activity.yaml       # Config for activity recognition experiments (PAMAP2)
 ├── data/
-│   ├── raw/
-│   │   ├── wesad/                 # Raw WESAD dataset (not tracked in git)
-│   │   └── pamap2/                # Raw PAMAP2 dataset (not tracked in git)
-│   ├── interim/
-│   │   ├── wesad/                 # Preprocessed, resampled, aligned data
-│   │   └── pamap2/
-│   └── features/
-│       ├── wesad/                 # Extracted feature tables (e.g., HRV, EDA, ACC)
-│       └── pamap2/
 ├── notebooks/
 │   ├── 01_eda_wesad.ipynb         # Exploratory data analysis for WESAD
-│   ├── 02_eda_pamap2.ipynb        # Exploratory data analysis for PAMAP2
 │   └── 03_results_summary.ipynb   # Result visualization & summary
 ├── reports/
 │   ├── figures/                   # Exported plots for reports/papers
@@ -125,7 +98,7 @@ wearable-ml-behavior/
 
 ## 4. Methodology
 
-This project follows a unified pipeline for both WESAD and PAMAP2.
+This project follows a unified pipeline for WESAD
 
 ### 4.1 Preprocessing
 	•	Resample all signals to a common sampling rate
@@ -139,7 +112,6 @@ This project follows a unified pipeline for both WESAD and PAMAP2.
 	•	Stride: e.g., 5–10 seconds
 	•	Assign a label to each window:
 	•	WESAD: stress vs non-stress
-	•	PAMAP2: activity class (e.g., walking, running, sitting)
 
 ### 4.3 Feature Extraction
 
@@ -204,6 +176,7 @@ python -m src.train --config configs/wesad_stress.yaml
 
 ### 5.3 
 python -m src.train --config configs/pamap2_activity.yaml
+(PAMAP2 pipeline is not yet fully implemented; this command is reserved for future releases.)
 
 ### 5.4 
 python -m src.explain --config configs/wesad_stress.yaml
@@ -244,23 +217,11 @@ We evaluate multiple machine learning and deep learning models under a consisten
 
 ---
 
+
 ### 6.2 Activity Recognition (PAMAP2)
 
-Using accelerometer + heart rate signals (30-second windows, 5-second stride), we evaluate HAR baselines.
-
-| Model | Accuracy | F1-Macro | Notes |
-|-------|----------|----------|-------|
-| Logistic Regression | ~0.70 | ~0.68 | Weak linear baseline |
-| Random Forest | ~0.86 | ~0.84 | Good non-linear performance |
-| **XGBoost** | **~0.88–0.90** | **~0.86–0.88** | Best ML model |
-| **1D-CNN** | **~0.90–0.93** | **~0.89–0.92** | CNN excels at motion pattern extraction |
-
-**Confusion matrix highlights:**
-
-- Walking ↔ Running: well-separated by magnitude & frequency of ACC.  
-- Sitting ↔ Standing: occasional confusion due to posture similarity.  
-- HR contributes to low-motion activity separation.
-
+The repository currently includes a scaffold for processing the PAMAP2 dataset.  
+Full modeling results will be provided after the training pipeline is implemented.
 ---
 
 ### 6.3 Explainability (SHAP)
@@ -272,10 +233,6 @@ Using accelerometer + heart rate signals (30-second windows, 5-second stride), w
 - Respiration variability → increases during stress.  
 - ACC features → correlate with amusement & movement.
 
-#### PAMAP2
-
-- ACC energy & SMA → dominant contributors to dynamic activities (running, walking).  
-- HR mean → improves separation between static activities.
 
 **Summary:**  
 SHAP results are consistent with physiological and behavioral literature, confirming the validity of the models and features.
