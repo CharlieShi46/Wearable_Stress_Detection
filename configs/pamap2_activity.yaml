@@ -1,0 +1,53 @@
+# ============================
+# PAMAP2 Activity Recognition Config
+# ============================
+
+dataset:
+  name: "pamap2"
+  raw_path: "data/raw/pamap2/"
+  interim_path: "data/interim/pamap2/"
+  features_path: "data/features/pamap2/"
+
+preprocessing:
+  sampling_rate: 33              # original PAMAP2 sampling rate ~100 Hz, but 33 is common downsample
+  normalization: "per_subject"
+
+windowing:
+  window_size_sec: 30
+  stride_sec: 5
+  min_valid_ratio: 0.8
+
+features:
+  use:
+    - accelerometer
+    - heart_rate
+  acc:
+    metrics: ["mean", "std", "energy", "entropy", "sma"]
+  hr:
+    metrics: ["hr_mean", "hr_std"]
+
+labels:
+  classes:
+    - lying
+    - sitting
+    - standing
+    - walking
+    - running
+    - cycling
+    - vacuuming
+    - ironing
+
+model:
+  type: "rf"               # ["logistic", "rf", "xgboost", "cnn", "lstm"]
+  params:
+    n_estimators: 200
+    max_depth: 12
+
+training:
+  seed: 123
+  validation_split: 0.2
+  test_split: 0.1
+
+evaluation:
+  metrics: ["accuracy", "f1_macro"]
+  plot_confusion_matrix: true

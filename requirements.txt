@@ -1,0 +1,32 @@
+# Core scientific stack
+numpy==1.26.4
+pandas==2.2.2
+scipy==1.12.0
+
+# Machine learning
+scikit-learn==1.4.2
+xgboost==2.0.3
+lightgbm==4.2.0
+
+# Deep learning (PyTorch stable version, CPU)
+torch==2.2.1
+torchaudio==2.2.1
+torchvision==0.17.1
+
+# Feature extraction (HRV, peaks, etc.)
+neurokit2==0.2.7
+pyhrv==0.4.2
+
+# Visualization
+matplotlib==3.8.3
+seaborn==0.13.2
+
+# Explainability
+shap==0.44.1
+
+# YAML config
+pyyaml==6.0.1
+
+# Utils
+tqdm==4.66.2
+joblib==1.3.2

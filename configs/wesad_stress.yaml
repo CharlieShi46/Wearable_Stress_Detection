@@ -1,0 +1,63 @@
+# ============================
+# WESAD Stress Detection Config
+# ============================
+
+dataset:
+  name: "wesad"
+  raw_path: "data/raw/wesad/"
+  interim_path: "data/interim/wesad/"
+  features_path: "data/features/wesad/"
+
+preprocessing:
+  sampling_rate: 32              # unify sampling rate
+  filter:
+    ecg_bandpass: [0.5, 40]      # Hz
+    bvp_bandpass: [0.5, 8]       # PPG typical range
+  normalization: "per_subject"   # z-score per subject
+
+windowing:
+  window_size_sec: 60
+  stride_sec: 5
+  min_valid_ratio: 0.8           # drop windows with too many missing values
+
+features:
+  use:
+    - hrv
+    - eda
+    - respiration
+    - accelerometer
+    - temperature
+  hrv:
+    metrics: ["sdnn", "rmssd", "pnn50", "hr_mean"]
+  eda:
+    metrics: ["tonic_mean", "n_peaks", "peak_amplitude_mean"]
+  resp:
+    metrics: ["resp_rate", "resp_variability"]
+  acc:
+    metrics: ["mean", "std", "energy", "sma"]
+
+labels:
+  stress_label: 2                # 2 = stress in WESAD
+  nonstress_labels: [0, 1]       # baseline + amusement
+
+model:
+  type: "xgboost"                # ["logistic", "rf", "xgboost", "cnn", "lstm"]
+  params:
+    n_estimators: 300
+    max_depth: 6
+    learning_rate: 0.05
+    subsample: 0.9
+
+training:
+  seed: 42
+  test_split_subjects: ["S2"]    # leave-one-subject-out example
+  validation_split: 0.2
+
+evaluation:
+  metrics: ["accuracy", "f1", "roc_auc"]
+  plot_confusion_matrix: true
+  plot_roc_curve: true
+
+explainability:
+  shap: true
+  top_features: 20
